@@ -1,4 +1,4 @@
-package org.plytimebandit.tools.pdfviewer;
+package org.plytimebandit.tools.pdfviewer.listener;
 
 public interface InputCallback {
 

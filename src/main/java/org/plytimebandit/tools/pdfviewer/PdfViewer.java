@@ -1,34 +1,16 @@
 package org.plytimebandit.tools.pdfviewer;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 
 import javax.swing.*;
 
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PagePanel;
+import org.plytimebandit.tools.pdfviewer.view.DashboardView;
+import org.plytimebandit.tools.pdfviewer.view.PresentationView;
 
-public class PdfViewer extends JFrame implements InputCallback {
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 
-    private static PagePanel pagePanel;
-    private static PDFFile pdfFile;
-
-    public PdfViewer(JPanel panel) throws HeadlessException {
-        super("PDF Viewer");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        getContentPane().add(panel);
-
-        new PdfViewerInputListener(this).registerComponents(this, panel);
-
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
-    }
+public class PdfViewer {
 
     public static void main(String... args) {
         if (args == null || args.length == 0) {
@@ -37,59 +19,39 @@ public class PdfViewer extends JFrame implements InputCallback {
             return;
         }
 
-        String pdfFilePath = args[0];
+        Injector injector = Guice.createInjector(new PdfViewerModule(args[0]));
+
+        PresentationView presentationView;
+        DashboardView dashboardView;
+        if (isMultiScreen()) {
+            presentationView = injector.getInstance(PresentationView.class);
+            dashboardView = injector.getInstance(DashboardView.class);
+        } else {
+            presentationView = injector.getInstance(PresentationView.class);
+            dashboardView = null;
+        }
 
         SwingUtilities.invokeLater(() -> {
-            pagePanel = new PagePanel();
 
-            PdfViewer pdfViewer = new PdfViewer(pagePanel);
+            if (isMultiScreen()) {
+                GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
-            pdfViewer.pack();
-            pdfViewer.getGraphicsConfiguration().getDevice().setFullScreenWindow(pdfViewer);
+                screenDevices[0].setFullScreenWindow(dashboardView);
+                screenDevices[1].setFullScreenWindow(presentationView);
 
-            File file = new File(pdfFilePath);
-            pdfFile = null;
-            try {
-                RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-                FileChannel channel = randomAccessFile.getChannel();
-                MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-                pdfFile = new PDFFile(buffer);
-            } catch (IOException e) {
-                e.printStackTrace();
+                dashboardView.start();
+                presentationView.start();
+
+            } else {
+                presentationView.getGraphicsConfiguration().getDevice().setFullScreenWindow(presentationView);
+                presentationView.start();
+
             }
-
-            PDFPage page = pdfFile.getPage(1);
-            pagePanel.showPage(page);
-
-            pdfViewer.setVisible(true);
         });
 
     }
 
-    @Override
-    public void nextPage() {
-        int numPages = pdfFile.getNumPages();
-        int pageNumber = pagePanel.getPage().getPageNumber();
-        if (pageNumber >= numPages) {
-            return;
-        }
-        PDFPage page = pdfFile.getPage(++pageNumber);
-        pagePanel.showPage(page);
-    }
-
-    @Override
-    public void previousPage() {
-        int pageNumber = pagePanel.getPage().getPageNumber();
-        if (pageNumber <= 1) {
-            return;
-        }
-        PDFPage page = pdfFile.getPage(--pageNumber);
-        pagePanel.showPage(page);
-    }
-
-    @Override
-    public void closeViewer() {
-        dispose();
-        System.exit(0);
+    private static boolean isMultiScreen() {
+        return GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1;
     }
 }

@@ -1,4 +1,4 @@
-package org.plytimebandit.tools.pdfviewer;
+package org.plytimebandit.tools.pdfviewer.listener;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -11,11 +11,12 @@ public class PdfViewerInputListener {
 
     private InputCallback inputCallback;
 
-    public PdfViewerInputListener(InputCallback inputCallback, Component... components) {
+    public PdfViewerInputListener registerCallback(InputCallback inputCallback) {
         this.inputCallback = inputCallback;
+        return this;
     }
 
-    public void registerComponents(Component... components) {
+    public PdfViewerInputListener registerComponents(Component... components) {
         KeyAdapter keyAdapter = new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -40,6 +41,8 @@ public class PdfViewerInputListener {
             component.addMouseListener(mouseAdapter);
             component.addMouseWheelListener(mouseAdapter);
         }
+
+        return this;
     }
 
     private void processKeyEvent(KeyEvent e) {
