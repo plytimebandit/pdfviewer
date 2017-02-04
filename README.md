@@ -10,8 +10,15 @@ Run PDF viewer
 -
 `java -jar pdf-viewer-1.0-SNAPSHOT-jar-with-dependencies.jar myPresentation.pdf`
 
+`java -jar pdf-viewer-1.0-SNAPSHOT-jar-with-dependencies.jar -pdf myPresentation.pdf`
+
+`java -jar pdf-viewer-1.0-SNAPSHOT-jar-with-dependencies.jar -pdf myPresentation.pdf -single true`
 
 Indeterminate roadmap
 -
-- Multi-screen support: Show fullscreen presentation on second screen and the current and next slide on first screen
 - Show timer
+
+
+Known issues
+-
+- From time to time screens are freezing when starting presentations in multi-screen mode

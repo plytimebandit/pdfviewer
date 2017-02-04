@@ -6,13 +6,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class PdfViewerInputListener {
 
-    private InputCallback inputCallback;
+    private Collection<InputCallback> inputCallbacks = new ArrayList<>();
 
     public PdfViewerInputListener registerCallback(InputCallback inputCallback) {
-        this.inputCallback = inputCallback;
+        this.inputCallbacks.add(inputCallback);
         return this;
     }
 
@@ -53,14 +55,14 @@ public class PdfViewerInputListener {
     }
 
     private void processMouseEvent(MouseEvent e) {
-        inputCallback.nextPage();
+        fireNextPage();
     }
 
     private void processMouseWheelEvent(MouseWheelEvent e) {
         if (e.getWheelRotation() >= 0) {
-            inputCallback.previousPage();
+            firePreviousPage();
         } else {
-            inputCallback.nextPage();
+            fireNextPage();
         }
         e.consume();
     }
@@ -73,19 +75,19 @@ public class PdfViewerInputListener {
             case KeyEvent.VK_KP_DOWN:
             case KeyEvent.VK_SPACE:
             case KeyEvent.VK_ENTER:
-                inputCallback.nextPage();
+                fireNextPage();
                 break;
 
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_KP_LEFT:
             case KeyEvent.VK_UP:
             case KeyEvent.VK_KP_UP:
-                inputCallback.previousPage();
+                fireNextPage();
                 break;
 
             case KeyEvent.VK_ESCAPE:
-                inputCallback.closeViewer();
-                System.exit(0);
+                fireCloseViewer();
+                break;
 
             default:
                 return false;
@@ -94,4 +96,21 @@ public class PdfViewerInputListener {
         return true;
     }
 
+    private void fireNextPage() {
+        for (InputCallback inputCallback : inputCallbacks) {
+            inputCallback.nextPage();
+        }
+    }
+
+    private void firePreviousPage() {
+        for (InputCallback inputCallback : inputCallbacks) {
+            inputCallback.previousPage();
+        }
+    }
+
+    private void fireCloseViewer() {
+        for (InputCallback inputCallback : inputCallbacks) {
+            inputCallback.closeViewer();
+        }
+    }
 }

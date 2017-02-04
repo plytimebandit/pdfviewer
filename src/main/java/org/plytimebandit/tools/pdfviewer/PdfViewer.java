@@ -19,11 +19,15 @@ public class PdfViewer {
             return;
         }
 
-        Injector injector = Guice.createInjector(new PdfViewerModule(args[0]));
+        ArgumentParser argumentParser = new ArgumentParser(args);
+        String pdfFilePath = argumentParser.get("pdf");
+        boolean isSingleScreenMode = argumentParser.get("single", boolean.class, false);
+
+        Injector injector = Guice.createInjector(new PdfViewerModule(pdfFilePath));
 
         PresentationView presentationView;
         DashboardView dashboardView;
-        if (isMultiScreen()) {
+        if (!isSingleScreenMode && isMultiScreen()) {
             presentationView = injector.getInstance(PresentationView.class);
             dashboardView = injector.getInstance(DashboardView.class);
         } else {
@@ -33,7 +37,7 @@ public class PdfViewer {
 
         SwingUtilities.invokeLater(() -> {
 
-            if (isMultiScreen()) {
+            if (!isSingleScreenMode && isMultiScreen()) {
                 GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
                 screenDevices[0].setFullScreenWindow(dashboardView);
@@ -48,7 +52,6 @@ public class PdfViewer {
 
             }
         });
-
     }
 
     private static boolean isMultiScreen() {
