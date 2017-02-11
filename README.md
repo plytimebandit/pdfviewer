@@ -15,10 +15,10 @@ Run PDF viewer
 `java -jar pdf-viewer-1.0-SNAPSHOT-jar-with-dependencies.jar -pdf myPresentation.pdf -single true`
 
 Indeterminate roadmap
--
-- Show timer
+- -/-
 
 
 Known issues
 -
-- From time to time screens are freezing when starting presentations in multi-screen mode
+- From time to time the screens are freezing during start when starting presentations in multi-screen mode
+- From time to time some slides appear completely black painted
