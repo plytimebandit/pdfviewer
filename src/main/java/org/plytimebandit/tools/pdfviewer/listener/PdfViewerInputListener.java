@@ -9,7 +9,13 @@ import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.inject.Inject;
+
+import org.plytimebandit.tools.pdfviewer.controller.PdfFileController;
+
 public class PdfViewerInputListener {
+
+    @Inject private PdfFileController pdfFileController;
 
     private Collection<InputCallback> inputCallbacks = new ArrayList<>();
 
@@ -82,7 +88,7 @@ public class PdfViewerInputListener {
             case KeyEvent.VK_KP_LEFT:
             case KeyEvent.VK_UP:
             case KeyEvent.VK_KP_UP:
-                fireNextPage();
+                firePreviousPage();
                 break;
 
             case KeyEvent.VK_ESCAPE:
@@ -97,20 +103,24 @@ public class PdfViewerInputListener {
     }
 
     private void fireNextPage() {
+        pdfFileController.increasePage();
+
         for (InputCallback inputCallback : inputCallbacks) {
-            inputCallback.nextPage();
+            inputCallback.updatePage();
         }
     }
 
     private void firePreviousPage() {
+        pdfFileController.decreasePage();
+
         for (InputCallback inputCallback : inputCallbacks) {
-            inputCallback.previousPage();
+            inputCallback.updatePage();
         }
     }
 
     private void fireCloseViewer() {
         for (InputCallback inputCallback : inputCallbacks) {
-            inputCallback.closeViewer();
+            System.exit(0);
         }
     }
 }

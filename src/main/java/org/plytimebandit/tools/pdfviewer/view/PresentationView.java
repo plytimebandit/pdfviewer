@@ -9,14 +9,13 @@ import org.plytimebandit.tools.pdfviewer.controller.PdfFileController;
 import org.plytimebandit.tools.pdfviewer.listener.InputCallback;
 import org.plytimebandit.tools.pdfviewer.listener.PdfViewerInputListener;
 
-import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
 
 public class PresentationView extends JFrame implements InputCallback {
 
-    protected PagePanel pagePanel;
-    protected PdfFileController pdfFileController;
+    private PagePanel pagePanel;
+    private PdfFileController pdfFileController;
 
     @Inject
     public PresentationView(PdfFileController pdfFileController, PdfViewerInputListener inputListener) {
@@ -41,38 +40,15 @@ public class PresentationView extends JFrame implements InputCallback {
         setVisible(true);
     }
 
-    public void showFirstPage() {
-        PDFFile pdfFile = pdfFileController.getPdfFile();
-        PDFPage page = pdfFile.getPage(1);
+    private void showFirstPage() {
+        PDFPage page = pdfFileController.getPage(1);
         pagePanel.showPage(page);
     }
 
     @Override
-    public void nextPage() {
-        PDFFile pdfFile = pdfFileController.getPdfFile();
-        int numPages = pdfFile.getNumPages();
-        int pageNumber = pagePanel.getPage().getPageNumber();
-        if (pageNumber >= numPages) {
-            return;
-        }
-        PDFPage page = pdfFile.getPage(++pageNumber);
+    public void updatePage() {
+        PDFPage page = pdfFileController.getCurrentPage();
         pagePanel.showPage(page);
-    }
-
-    @Override
-    public void previousPage() {
-        PDFFile pdfFile = pdfFileController.getPdfFile();
-        int pageNumber = pagePanel.getPage().getPageNumber();
-        if (pageNumber <= 1) {
-            return;
-        }
-        PDFPage page = pdfFile.getPage(--pageNumber);
-        pagePanel.showPage(page);
-    }
-
-    @Override
-    public void closeViewer() {
-        System.exit(0);
     }
 
 }
