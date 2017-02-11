@@ -14,7 +14,7 @@ import org.plytimebandit.tools.pdfviewer.listener.PdfViewerInputListener;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
 
-public class DashboardView extends JFrame implements InputCallback {
+public class DashboardView extends JFrame implements InputCallback, PresentationView {
 
     private final JLabel timerLabel;
     private PagePanel pagePanelNext;
@@ -55,9 +55,15 @@ public class DashboardView extends JFrame implements InputCallback {
         pack();
     }
 
+    @Override
     public void start() {
         showFirstPage();
         setVisible(true);
+    }
+
+    @Override
+    public JFrame getFrame() {
+        return this;
     }
 
     private void showFirstPage() {

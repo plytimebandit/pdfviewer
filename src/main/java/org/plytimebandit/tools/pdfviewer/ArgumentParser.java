@@ -43,7 +43,10 @@ public class ArgumentParser {
 
     public boolean isInteractiveMode() {
         // TODO implementation pending...
-//        if (args.length == 1 && args[0].equals("-i")) {
+//        if (args.length == 0) {
+//            return true;
+//
+//        } else if (args.length == 1 && args[0].equals("-i")) {
 //            return true;
 //
 //        } else if (args.length == 2 && args[0].equals("-interactive") && args[1].equals("true")) {

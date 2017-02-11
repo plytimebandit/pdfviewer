@@ -1,11 +1,13 @@
 package org.plytimebandit.tools.pdfviewer;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 import org.plytimebandit.tools.pdfviewer.view.DashboardView;
 import org.plytimebandit.tools.pdfviewer.view.PresentationView;
+import org.plytimebandit.tools.pdfviewer.view.PublicView;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -21,54 +23,32 @@ public class PdfViewer {
         }
 
         ArgumentParser argumentParser = new ArgumentParser(args);
-        boolean isInteractiveMode = argumentParser.isInteractiveMode();
         String pdfFilePath = argumentParser.getPdf();
         boolean isSingleScreenMode = argumentParser.isSingleScreenMode();
 
         Injector injector = Guice.createInjector(new PdfViewerModule(pdfFilePath));
 
-        PresentationView presentationView;
-        PresentationView presentationView2;
-        DashboardView dashboardView;
+        ArrayList<PresentationView> presentationViews = new ArrayList<>();
         if (!isSingleScreenMode && isMultiScreen()) {
-            presentationView = injector.getInstance(PresentationView.class);
-            presentationView2 = null;
-            dashboardView = injector.getInstance(DashboardView.class);
+            presentationViews.add(injector.getInstance(DashboardView.class));
+            presentationViews.add(injector.getInstance(PublicView.class));
         } else if (isSingleScreenMode && isMultiScreen()) {
-            presentationView = injector.getInstance(PresentationView.class);
-            presentationView2 = injector.getInstance(PresentationView.class);
-            dashboardView = null;
+            presentationViews.add(injector.getInstance(PublicView.class));
+            presentationViews.add(injector.getInstance(PublicView.class));
         } else {
-            presentationView = injector.getInstance(PresentationView.class);
-            presentationView2 = null;
-            dashboardView = null;
+            presentationViews.add(injector.getInstance(PublicView.class));
         }
 
         SwingUtilities.invokeLater(() -> {
 
-            if (!isSingleScreenMode && isMultiScreen()) {
-                GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+            GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
-                screenDevices[0].setFullScreenWindow(dashboardView);
-                screenDevices[1].setFullScreenWindow(presentationView);
-
-                dashboardView.start();
+            for (int i = 0; i < presentationViews.size(); i++) {
+                PresentationView presentationView = presentationViews.get(i);
+                screenDevices[i].setFullScreenWindow(presentationView.getFrame());
                 presentationView.start();
-
-            } else if (isSingleScreenMode && isMultiScreen()) {
-                GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
-
-                screenDevices[0].setFullScreenWindow(presentationView);
-                screenDevices[1].setFullScreenWindow(presentationView2);
-
-                presentationView.start();
-                presentationView2.start();
-
-            } else {
-                presentationView.getGraphicsConfiguration().getDevice().setFullScreenWindow(presentationView);
-                presentationView.start();
-
             }
+
         });
     }
 
