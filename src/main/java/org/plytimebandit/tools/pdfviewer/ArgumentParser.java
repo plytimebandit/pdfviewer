@@ -8,45 +8,48 @@ public class ArgumentParser {
         this.args = args;
     }
 
-    public String get(String parameter) {
-        if (parameter == null || args == null || args.length == 0) {
-            return null;
-        }
-
-        if (args.length == 1) {
+    public String getPdf() {
+        if (args.length == 1 && !isInteractiveMode()) {
             return args[0];
-        }
 
-        for (int i = 0; i < args.length; i++) {
-            if (args[i].equals('-' + parameter)) {
-                return args[i + 1];
+        } else {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].equals("-pdf")) {
+                    return args[i + 1];
+                }
             }
         }
 
-        return null;
+        throw new IllegalStateException("No PDF file was given");
     }
 
-    public String get(String parameter, String fallback) {
-        String value = get(parameter);
-        return value == null ? fallback : value;
-    }
+    public boolean isSingleScreenMode() {
+        if (args.length == 1) {
+            return false;
 
-    public <T> T get(String parameter, Class<T> clazz, T fallback) {
-        T value = get(parameter, clazz);
-        return value == null ? fallback : value;
-    }
-
-    public <T> T get(String parameter, Class<T> clazz) {
-        String value = get(parameter);
-        if (value == null) {
-            return null;
+        } else {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].equals("-s")) {
+                    return true;
+                }
+                if (args[i].equals("-single") && args.length > i+1) {
+                    return args[i + 1].equals("true");
+                }
+            }
         }
 
-        if (clazz == Boolean.class || clazz == boolean.class) {
-            return (T) (Boolean) Boolean.valueOf(value);
-        } else if (clazz == Integer.class) {
-            return (T) Integer.valueOf(value);
-        }
-        return (T) value;
+        return false;
+    }
+
+    public boolean isInteractiveMode() {
+        // TODO implementation pending...
+//        if (args.length == 1 && args[0].equals("-i")) {
+//            return true;
+//
+//        } else if (args.length == 2 && args[0].equals("-interactive") && args[1].equals("true")) {
+//            return true;
+//        }
+
+        return false;
     }
 }
