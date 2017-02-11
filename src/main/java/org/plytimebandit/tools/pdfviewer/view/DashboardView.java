@@ -1,6 +1,8 @@
 package org.plytimebandit.tools.pdfviewer.view;
 
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import javax.inject.Inject;
 import javax.swing.*;
@@ -14,6 +16,7 @@ import com.sun.pdfview.PagePanel;
 
 public class DashboardView extends JFrame implements InputCallback {
 
+    private final JLabel timerLabel;
     private PagePanel pagePanelNext;
 
     private PagePanel pagePanel;
@@ -31,6 +34,19 @@ public class DashboardView extends JFrame implements InputCallback {
         getContentPane().add(pagePanel, BorderLayout.CENTER);
         pagePanelNext = new PagePanel();
         getContentPane().add(pagePanelNext, BorderLayout.EAST);
+        timerLabel = new JLabel("00:00:00", SwingConstants.CENTER);
+        timerLabel.setFont(timerLabel.getFont().deriveFont(30f));
+        getContentPane().add(timerLabel, BorderLayout.SOUTH);
+
+        LocalDateTime startTime = LocalDateTime.now();
+        Timer timer = new Timer(1000, (e) -> {
+            LocalDateTime now = LocalDateTime.now();
+            long hours = ChronoUnit.HOURS.between(startTime, now);
+            long minutes = ChronoUnit.MINUTES.between(startTime, now) % 60;
+            long seconds = ChronoUnit.SECONDS.between(startTime, now) % 60;
+            timerLabel.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+        });
+        timer.start();
 
         inputListener.registerCallback(this).registerComponents(this, pagePanel, pagePanelNext);
 
