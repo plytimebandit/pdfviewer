@@ -18,10 +18,10 @@ Run PDF viewer
 
 Indeterminate roadmap
 -
-- -/-
+- Implement interactive mode where the user can select the PDF he wants to present.
 
 
 Known issues
 -
-- From time to time the screens are freezing during start when starting presentations in multi-screen mode
-- From time to time some slides appear completely black painted
+- From time to time the screens are freezing during start when starting presentations in multi-screen mode.
+- From time to time some slides appear completely black painted.
