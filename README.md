@@ -24,15 +24,27 @@ If you want to run your presentation in single-screen mode even with more screen
 - `-single true`
 - `-s`
 
+There is a debug mode that runs the viewer in a window instead of fullscreen.
+In that mode you can stop at breakpoints easily.
+
+- `-debug true`
+- `-d`
+
 If you use any additional parameters you have to specify the PDF file with the `-pdf` parameter.
 
 
 Indeterminate roadmap
 -
+
 - Implement interactive mode where the user can select the PDF he wants to present.
 
 
-Known issues
+Build
 -
-- From time to time the screens are freezing during start when starting presentations in multi-screen mode.
-- From time to time some slides appear completely black painted.
+
+To build the project you have to build the [PDFrenderer](https://github.com/katjas/PDFrenderer) dependency first.
+That's a fork of the original PDFrenderer but implements some features, e.g. the PDF pattern type 2.
+
+Just clone that repository and install it into your local maven repository.
+Afterwards you can build this project.
+
