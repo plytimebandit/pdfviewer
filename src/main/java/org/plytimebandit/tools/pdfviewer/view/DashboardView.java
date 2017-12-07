@@ -12,14 +12,13 @@ import org.plytimebandit.tools.pdfviewer.listener.InputCallback;
 import org.plytimebandit.tools.pdfviewer.listener.PdfViewerInputListener;
 
 import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PagePanel;
 
 public class DashboardView extends JFrame implements InputCallback, PresentationView {
 
     private final JLabel timerLabel;
-    private PagePanel pagePanelNext;
+    private PdfPanel pagePanelNext;
 
-    private PagePanel pagePanel;
+    private PdfPanel pagePanel;
     private PdfFileController pdfFileController;
 
     @Inject
@@ -30,9 +29,9 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
 
-        pagePanel = new PagePanel();
+        pagePanel = new PdfPanel();
         getContentPane().add(pagePanel, BorderLayout.CENTER);
-        pagePanelNext = new PagePanel();
+        pagePanelNext = new PdfPanel();
         getContentPane().add(pagePanelNext, BorderLayout.EAST);
         timerLabel = new JLabel("00:00:00", SwingConstants.CENTER);
         timerLabel.setFont(timerLabel.getFont().deriveFont(30f));

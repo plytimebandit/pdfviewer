@@ -10,11 +10,10 @@ import org.plytimebandit.tools.pdfviewer.listener.InputCallback;
 import org.plytimebandit.tools.pdfviewer.listener.PdfViewerInputListener;
 
 import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PagePanel;
 
 public class PublicView extends JFrame implements InputCallback, PresentationView {
 
-    private PagePanel pagePanel;
+    private PdfPanel pagePanel;
     private PdfFileController pdfFileController;
 
     @Inject
@@ -25,7 +24,7 @@ public class PublicView extends JFrame implements InputCallback, PresentationVie
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
 
-        pagePanel = new PagePanel();
+        pagePanel = new PdfPanel();
         getContentPane().add(pagePanel, BorderLayout.CENTER);
 
         inputListener.registerCallback(this).registerComponents(this, pagePanel);

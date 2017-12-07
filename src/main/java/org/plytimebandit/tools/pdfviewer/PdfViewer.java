@@ -39,17 +39,23 @@ public class PdfViewer {
             presentationViews.add(injector.getInstance(PublicView.class));
         }
 
-        SwingUtilities.invokeLater(() -> {
+        if (argumentParser.isDebug()) {
+            presentationViews.forEach(PresentationView::start);
 
-            GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+        } else {
+            SwingUtilities.invokeLater(() -> {
 
-            for (int i = 0; i < presentationViews.size(); i++) {
-                PresentationView presentationView = presentationViews.get(i);
-                screenDevices[i].setFullScreenWindow(presentationView.getFrame());
-                presentationView.start();
-            }
+                GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
-        });
+                for (int i = 0; i < presentationViews.size(); i++) {
+                    PresentationView presentationView = presentationViews.get(i);
+                    screenDevices[i].setFullScreenWindow(presentationView.getFrame());
+                    presentationView.start();
+                }
+
+            });
+        }
+
     }
 
     private static boolean isMultiScreen() {

@@ -55,4 +55,22 @@ public class ArgumentParser {
 
         return false;
     }
+
+    public boolean isDebug() {
+        if (args.length == 1) {
+            return false;
+
+        } else {
+            for (int i = 0; i < args.length; i++) {
+                if (args[i].equals("-d")) {
+                    return true;
+                }
+                if (args[i].equals("-debug") && args.length > i+1) {
+                    return args[i + 1].equals("true");
+                }
+            }
+        }
+
+        return false;
+    }
 }

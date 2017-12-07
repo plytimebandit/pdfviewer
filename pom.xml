@@ -75,9 +75,10 @@
 
     <dependencies>
         <dependency>
+            <!-- https://github.com/katjas/PDFrenderer -->
             <groupId>org.swinglabs</groupId>
             <artifactId>pdf-renderer</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.5.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
