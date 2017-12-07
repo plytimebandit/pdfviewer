@@ -29,9 +29,9 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
 
-        pagePanel = new PdfPanel();
+        pagePanel = new PdfPanel(pdfFileController.isDebug());
         getContentPane().add(pagePanel, BorderLayout.CENTER);
-        pagePanelNext = new PdfPanel();
+        pagePanelNext = new PdfPanel(pdfFileController.isDebug());
         getContentPane().add(pagePanelNext, BorderLayout.EAST);
         timerLabel = new JLabel("00:00:00", SwingConstants.CENTER);
         timerLabel.setFont(timerLabel.getFont().deriveFont(30f));

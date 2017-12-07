@@ -11,10 +11,12 @@ import com.sun.pdfview.PDFPage;
 
 public class PdfFileController {
 
+    private boolean isDebug;
     private int currentPage;
     private PDFFile pdfFile;
 
-    public PdfFileController(String pdfFilePath) {
+    public PdfFileController(String pdfFilePath, boolean isDebug) {
+        this.isDebug = isDebug;
         currentPage = 1;
 
         try (
@@ -55,5 +57,9 @@ public class PdfFileController {
 
     public PDFPage getPage(int pageNumber) {
         return pdfFile.getPage(pageNumber);
+    }
+
+    public boolean isDebug() {
+        return isDebug;
     }
 }

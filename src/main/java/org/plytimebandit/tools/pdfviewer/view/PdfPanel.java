@@ -12,6 +12,11 @@ import com.sun.pdfview.PDFRenderer;
 public class PdfPanel extends JComponent {
 
     private PDFPage page;
+    private boolean isDebug;
+
+    public PdfPanel(boolean isDebug) {
+        this.isDebug = isDebug;
+    }
 
     void showPage(PDFPage page) {
         this.page = page;
@@ -45,14 +50,20 @@ public class PdfPanel extends JComponent {
     }
 
     private Rectangle getScaledPageSizeAndPosition(PDFPage page) {
-        // for fullscreen mode
-        DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
-        int windowHeight = displayMode.getHeight();
-        int windowWidth = displayMode.getWidth();
-        // for window mode
-//        Rectangle maximumWindowBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-//        int windowHeight = bounds.height;
-//        int windowWidth = bounds.width;
+        int windowHeight;
+        int windowWidth;
+        if (isDebug) {
+            // for window mode
+            Rectangle maximumWindowBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+            windowHeight = maximumWindowBounds.height;
+            windowWidth = maximumWindowBounds.width;
+
+        } else {
+            // for fullscreen mode
+            DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+            windowHeight = displayMode.getHeight();
+            windowWidth = displayMode.getWidth();
+        }
 
         double pageWidth = page.getWidth();
         double pageHeight = page.getHeight();

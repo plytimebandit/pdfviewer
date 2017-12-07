@@ -25,8 +25,9 @@ public class PdfViewer {
         ArgumentParser argumentParser = new ArgumentParser(args);
         String pdfFilePath = argumentParser.getPdf();
         boolean isSingleScreenMode = argumentParser.isSingleScreenMode();
+        boolean isDebug = argumentParser.isDebug();
 
-        Injector injector = Guice.createInjector(new PdfViewerModule(pdfFilePath));
+        Injector injector = Guice.createInjector(new PdfViewerModule(pdfFilePath, isDebug));
 
         ArrayList<PresentationView> presentationViews = new ArrayList<>();
         if (!isSingleScreenMode && isMultiScreen()) {
@@ -39,7 +40,7 @@ public class PdfViewer {
             presentationViews.add(injector.getInstance(PublicView.class));
         }
 
-        if (argumentParser.isDebug()) {
+        if (isDebug) {
             presentationViews.forEach(PresentationView::start);
 
         } else {

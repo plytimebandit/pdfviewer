@@ -8,14 +8,16 @@ import com.google.inject.AbstractModule;
 public class PdfViewerModule extends AbstractModule {
 
     private String pdfFilePath;
+    private boolean isDebug;
 
-    public PdfViewerModule(String pdfFilePath) {
+    public PdfViewerModule(String pdfFilePath, boolean isDebug) {
         this.pdfFilePath = pdfFilePath;
+        this.isDebug = isDebug;
     }
 
     @Override
     protected void configure() {
-        bind(PdfFileController.class).toInstance(new PdfFileController(pdfFilePath));
+        bind(PdfFileController.class).toInstance(new PdfFileController(pdfFilePath, isDebug));
         bind(PdfViewerInputListener.class).toInstance(new PdfViewerInputListener());
     }
 }
