@@ -33,12 +33,6 @@ In that mode you can stop at breakpoints easily.
 If you use any additional parameters you have to specify the PDF file with the `-pdf` parameter.
 
 
-Indeterminate roadmap
--
-
-- Implement interactive mode where the user can select the PDF he wants to present.
-
-
 Build
 -
 
@@ -48,4 +42,12 @@ That's a fork of the original PDFrenderer but implements some features, e.g. the
 Just clone that repository and install it into your local maven repository.
 There might be an issue when you try to build the project with Java 8. My quick fix was to update the property `java.version` from `1.6` to `1.8` inside the pom.xml.
 Afterwards when the dependency is installed you can build this project.
+
+
+Indeterminate roadmap
+-
+
+- Implement interactive mode where the user can select the PDF file to present.
+- Implement precaching at startup so that browsing through slides might be faster in some presentations
+
 
