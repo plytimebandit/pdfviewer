@@ -46,5 +46,6 @@ To build the project you have to build the [PDFrenderer](https://github.com/katj
 That's a fork of the original PDFrenderer but implements some features, e.g. the PDF pattern type 2.
 
 Just clone that repository and install it into your local maven repository.
-Afterwards you can build this project.
+There might be an issue when you try to build the project with Java 8. My quick fix was to update the property `java.version` from `1.6` to `1.8` inside the pom.xml.
+Afterwards when the dependency is installed you can build this project.
 
