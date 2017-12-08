@@ -56,4 +56,9 @@ public class PublicView extends JFrame implements InputCallback, PresentationVie
         pagePanel.showPage(page);
     }
 
+    @Override
+    public void close() {
+        setVisible(false);
+    }
+
 }

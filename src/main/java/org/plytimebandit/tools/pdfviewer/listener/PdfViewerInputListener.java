@@ -119,8 +119,7 @@ public class PdfViewerInputListener {
     }
 
     private void fireCloseViewer() {
-        for (InputCallback inputCallback : inputCallbacks) {
-            System.exit(0);
-        }
+        inputCallbacks.forEach(InputCallback::close);
+        System.exit(0);
     }
 }

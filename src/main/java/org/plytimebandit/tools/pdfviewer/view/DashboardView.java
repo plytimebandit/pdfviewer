@@ -82,4 +82,9 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
         PDFPage page2 = pdfFileController.getFollowingPage();
         pagePanelNext.showPage(page2);
     }
+
+    @Override
+    public void close() {
+        setVisible(false);
+    }
 }
