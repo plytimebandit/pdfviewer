@@ -48,7 +48,6 @@ Indeterminate roadmap
 -
 
 - Implement interactive mode where the user can select the PDF file to present.
-- Implement precaching at startup so that browsing through slides might be faster in some presentations
 
 
 Known issues
