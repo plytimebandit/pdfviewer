@@ -24,7 +24,7 @@ public class PublicView extends JFrame implements InputCallback, PresentationVie
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
 
-        pagePanel = new PdfPanel(pdfFileController.isDebug());
+        pagePanel = new PdfPanel();
         getContentPane().add(pagePanel, BorderLayout.CENTER);
 
         inputListener.registerCallback(this).registerComponents(this, pagePanel);

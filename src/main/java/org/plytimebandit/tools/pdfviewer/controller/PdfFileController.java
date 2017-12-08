@@ -11,17 +11,15 @@ import com.sun.pdfview.PDFPage;
 
 public class PdfFileController {
 
-    private boolean isDebug;
     private int currentPage;
     private PDFFile pdfFile;
 
-    public PdfFileController(String pdfFilePath, boolean isDebug) {
-        this.isDebug = isDebug;
+    public PdfFileController(String pdfFilePath) {
         currentPage = 1;
 
         try (
             RandomAccessFile randomAccessFile = new RandomAccessFile(new File(pdfFilePath), "r");
-            FileChannel channel = randomAccessFile.getChannel();
+            FileChannel channel = randomAccessFile.getChannel()
         ) {
             MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
             pdfFile = new PDFFile(buffer);
@@ -59,7 +57,4 @@ public class PdfFileController {
         return pdfFile.getPage(pageNumber);
     }
 
-    public boolean isDebug() {
-        return isDebug;
-    }
 }
