@@ -20,6 +20,9 @@ public class PdfPanel extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
+        if (page == null) {
+            return;
+        }
         Paper paper = new Paper();
         int formatOrientation = page.getAspectRatio() > 1 ? PageFormat.LANDSCAPE : PageFormat.PORTRAIT;
         Rectangle scaledPageSize = getScaledPageSizeAndPosition(page);
