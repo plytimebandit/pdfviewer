@@ -1,20 +1,26 @@
 package org.plytimebandit.tools.pdfviewer.view;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.swing.*;
 
+import org.plytimebandit.tools.pdfviewer.component.CachingDialog;
+import org.plytimebandit.tools.pdfviewer.component.PdfPanel;
 import org.plytimebandit.tools.pdfviewer.controller.PdfFileController;
+import org.plytimebandit.tools.pdfviewer.listener.CachingCallback;
 import org.plytimebandit.tools.pdfviewer.listener.InputCallback;
 import org.plytimebandit.tools.pdfviewer.listener.PdfViewerInputListener;
 
-import com.sun.pdfview.PDFPage;
-
-public class PublicView extends JFrame implements InputCallback, PresentationView {
+public class PublicView extends JFrame implements InputCallback, PresentationView, CachingCallback {
 
     private PdfPanel pagePanel;
     private PdfFileController pdfFileController;
+
+    private List<BufferedImage> bufferedPdfPages;
+    private CachingDialog cachingDialog;
 
     @Inject
     public PublicView(PdfFileController pdfFileController, PdfViewerInputListener inputListener) {
@@ -36,8 +42,9 @@ public class PublicView extends JFrame implements InputCallback, PresentationVie
 
     @Override
     public void start() {
-        showFirstPage();
         setVisible(true);
+        bufferedPdfPages = pdfFileController.cachePages(getWidth(), getHeight(), this);
+        showFirstPage();
     }
 
     @Override
@@ -46,13 +53,14 @@ public class PublicView extends JFrame implements InputCallback, PresentationVie
     }
 
     private void showFirstPage() {
-        PDFPage page = pdfFileController.getPage(1);
+        BufferedImage page = bufferedPdfPages.get(0);
         pagePanel.showPage(page);
     }
 
     @Override
     public void updatePage() {
-        PDFPage page = pdfFileController.getCurrentPage();
+        int currentPage = pdfFileController.getCurrentPage();
+        BufferedImage page = bufferedPdfPages.get(currentPage - 1);
         pagePanel.showPage(page);
     }
 
@@ -61,4 +69,19 @@ public class PublicView extends JFrame implements InputCallback, PresentationVie
         setVisible(false);
     }
 
+    @Override
+    public void startCaching(int numPages) {
+        cachingDialog = new CachingDialog(numPages, PublicView.this);
+        cachingDialog.show();
+    }
+
+    @Override
+    public void cachedNextPage() {
+        cachingDialog.increase();
+    }
+
+    @Override
+    public void finishedCaching() {
+        cachingDialog.close();
+    }
 }

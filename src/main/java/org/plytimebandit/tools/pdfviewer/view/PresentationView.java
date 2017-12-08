@@ -7,4 +7,5 @@ public interface PresentationView {
     void start();
 
     JFrame getFrame();
+
 }

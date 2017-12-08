@@ -1,24 +1,29 @@
 package org.plytimebandit.tools.pdfviewer.view;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import javax.inject.Inject;
 import javax.swing.*;
 
+import org.plytimebandit.tools.pdfviewer.component.CachingDialog;
+import org.plytimebandit.tools.pdfviewer.component.PdfPanel;
 import org.plytimebandit.tools.pdfviewer.controller.PdfFileController;
+import org.plytimebandit.tools.pdfviewer.listener.CachingCallback;
 import org.plytimebandit.tools.pdfviewer.listener.InputCallback;
 import org.plytimebandit.tools.pdfviewer.listener.PdfViewerInputListener;
 
-import com.sun.pdfview.PDFPage;
-
-public class DashboardView extends JFrame implements InputCallback, PresentationView {
+public class DashboardView extends JFrame implements InputCallback, PresentationView, CachingCallback {
 
     private PdfFileController pdfFileController;
     private PdfPanel pagePanel;
     private PdfPanel pagePanelNext;
     private final JLabel timerLabel;
+    private java.util.List<BufferedImage> bufferedPdfPages;
+    private java.util.List<BufferedImage> bufferedPdfPagesNext;
+    private CachingDialog cachingDialog;
 
     @Inject
     public DashboardView(PdfFileController pdfFileController, PdfViewerInputListener inputListener) {
@@ -36,16 +41,6 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
         timerLabel.setFont(timerLabel.getFont().deriveFont(30f));
         getContentPane().add(timerLabel, BorderLayout.SOUTH);
 
-        LocalDateTime startTime = LocalDateTime.now();
-        Timer timer = new Timer(1000, (e) -> {
-            LocalDateTime now = LocalDateTime.now();
-            long hours = ChronoUnit.HOURS.between(startTime, now);
-            long minutes = ChronoUnit.MINUTES.between(startTime, now) % 60;
-            long seconds = ChronoUnit.SECONDS.between(startTime, now) % 60;
-            timerLabel.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-        });
-        timer.start();
-
         inputListener.registerCallback(this).registerComponents(this, pagePanel, pagePanelNext);
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -56,9 +51,28 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
     @Override
     public void start() {
         setVisible(true);
+
         pagePanel.setPreferredSize(new Dimension(getWidth() / 5 * 3, getHeight()));
+        bufferedPdfPages = pdfFileController.cachePages(pagePanel.getPreferredSize().width, pagePanel.getPreferredSize().height, this);
+
         pagePanelNext.setPreferredSize(new Dimension(getWidth() / 5 * 2, getHeight()));
+        bufferedPdfPagesNext = pdfFileController.cachePages(pagePanelNext.getPreferredSize().width, pagePanelNext.getPreferredSize().height, this);
+
         showFirstPage();
+
+        startTimer();
+    }
+
+    private void startTimer() {
+        LocalDateTime startTime = LocalDateTime.now();
+        Timer timer = new Timer(1000, (e) -> {
+            LocalDateTime now = LocalDateTime.now();
+            long hours = ChronoUnit.HOURS.between(startTime, now);
+            long minutes = ChronoUnit.MINUTES.between(startTime, now) % 60;
+            long seconds = ChronoUnit.SECONDS.between(startTime, now) % 60;
+            timerLabel.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+        });
+        timer.start();
     }
 
     @Override
@@ -67,24 +81,40 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
     }
 
     private void showFirstPage() {
-        PDFPage page1 = pdfFileController.getPage(1);
+        BufferedImage page1 = bufferedPdfPages.get(0);
         pagePanel.showPage(page1);
 
-        PDFPage page2 = pdfFileController.getPage(2);
+        BufferedImage page2 = bufferedPdfPagesNext.get(1);
         pagePanelNext.showPage(page2);
     }
 
     @Override
     public void updatePage() {
-        PDFPage page1 = pdfFileController.getCurrentPage();
+        BufferedImage page1 = bufferedPdfPages.get(pdfFileController.getCurrentPage() - 1);
         pagePanel.showPage(page1);
 
-        PDFPage page2 = pdfFileController.getFollowingPage();
+        BufferedImage page2 = bufferedPdfPagesNext.get(pdfFileController.getNextPage() - 1);
         pagePanelNext.showPage(page2);
     }
 
     @Override
     public void close() {
         setVisible(false);
+    }
+
+    @Override
+    public void startCaching(int numPages) {
+        cachingDialog = new CachingDialog(numPages, this);
+        cachingDialog.show();
+    }
+
+    @Override
+    public void cachedNextPage() {
+        cachingDialog.increase();
+    }
+
+    @Override
+    public void finishedCaching() {
+        cachingDialog.close();
     }
 }

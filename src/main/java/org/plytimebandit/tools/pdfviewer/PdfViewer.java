@@ -3,8 +3,6 @@ package org.plytimebandit.tools.pdfviewer;
 import java.awt.*;
 import java.util.ArrayList;
 
-import javax.swing.*;
-
 import org.plytimebandit.tools.pdfviewer.view.DashboardView;
 import org.plytimebandit.tools.pdfviewer.view.PresentationView;
 import org.plytimebandit.tools.pdfviewer.view.PublicView;
@@ -43,7 +41,7 @@ public class PdfViewer {
             presentationViews.forEach(PresentationView::start);
 
         } else {
-            SwingUtilities.invokeLater(() -> {
+//            SwingUtilities.invokeLater(() -> {
 
                 GraphicsDevice[] screenDevices = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
@@ -53,7 +51,7 @@ public class PdfViewer {
                     presentationView.start();
                 }
 
-            });
+//            });
         }
 
     }
