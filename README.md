@@ -51,3 +51,7 @@ Indeterminate roadmap
 - Implement precaching at startup so that browsing through slides might be faster in some presentations
 
 
+Known issues
+-
+
+- From time to time single pages appear in inverted colors.

@@ -15,11 +15,10 @@ import com.sun.pdfview.PDFPage;
 
 public class DashboardView extends JFrame implements InputCallback, PresentationView {
 
-    private final JLabel timerLabel;
-    private PdfPanel pagePanelNext;
-
-    private PdfPanel pagePanel;
     private PdfFileController pdfFileController;
+    private PdfPanel pagePanel;
+    private PdfPanel pagePanelNext;
+    private final JLabel timerLabel;
 
     @Inject
     public DashboardView(PdfFileController pdfFileController, PdfViewerInputListener inputListener) {
@@ -56,8 +55,10 @@ public class DashboardView extends JFrame implements InputCallback, Presentation
 
     @Override
     public void start() {
-        showFirstPage();
         setVisible(true);
+        pagePanel.setPreferredSize(new Dimension(getWidth() / 5 * 3, getHeight()));
+        pagePanelNext.setPreferredSize(new Dimension(getWidth() / 5 * 2, getHeight()));
+        showFirstPage();
     }
 
     @Override
