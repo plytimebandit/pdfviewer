@@ -54,7 +54,7 @@ public class PdfFileController {
         currentPage--;
     }
 
-    private PDFPage getPage(int pageNumber) {
+    PDFPage getPage(int pageNumber) {
         return pdfFile.getPage(pageNumber);
     }
 
